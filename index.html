@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Breaking News</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation.min.css">
+</head>
+<body>
+<div id="app" class="container">
+    <h1 class="text-center">Breaking News</h1>
+    <section class="callout secondary">
+        <h5 class="text-center">Filter by Category</h5>
+        <form>
+            <div class="row">
+                <div class="large-6 columns">
+                    <select v-model="selectedSection">
+                        <option v-for="section in sections" :value="section">{{ section }}</option>
+                    </select>
+                </div>
+                <div class="medium-6 columns">
+                    <button type="button" @click="fetchNews" class="button expanded">Retrieve</button>
+                </div>
+            </div>
+        </form>
+    </section>
+    <div class="row">
+        <div class="large-8 columns">
+            <input type="text" v-model="searchTerm" placeholder="Search News">
+        </div>
+        <div class="large-4 columns">
+            <pagination :current-page="currentPage" :total-pages="totalPages" @page-changed="fetchNews"></pagination>
+        </div>
+    </div>
+    <div v-if="loading" class="text-center">
+        <img src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/0.16.1/images/loader-large.gif" alt="Loader">
+    </div>
+    <div v-if="error" class="callout alert">{{ error }}</div>
+    <news-list :news="displayedNews" :section="selectedSection"></news-list>
+</div>
+
+<template id="news-list-template">
+    <div class="row">
+        <div class="large-12 columns">
+            <h4>{{ section }} News</h4>
+            <ul>
+                <li v-for="article in news">
+                    <h5><a :href="article.url" target="_blank">{{ article.title }}</a></h5>
+                    <p>{{ article.description }}</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+</template>
+
+<script src="https://unpkg.com/vue"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://unpkg.com/lodash"></script>
+<script src="pagination.js"></script>
+<script>
+    Vue.component('news-list', {
+        template: '#news-list-template',
+        props: ['news', 'section']
+    });
+
+    new Vue({
+        el: '#app',
+        data: {
+            sections: ['World', 'Business', 'Politics', 'Technology', 'Science', 'Health', 'Sports'],
+            selectedSection: 'World',
+            news: [],
+            displayedNews: [],
+            searchTerm: '',
+            currentPage: 1,
+            totalPages: 0,
+            pageSize: 5,
+            loading: false,
+            error: ''
+        },
+        methods: {
+            fetchNews: function () {
+                this.loading = true;
+                this.error = '';
+                axios.get('https://newsapi.org/v2/top-headlines', {
+                    params:
