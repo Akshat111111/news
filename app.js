@@ -1,7 +1,7 @@
 const NYTBaseUrl = "https://api.nytimes.com/svc/topstories/v2/";
 const ApiKey = "47191a38c355460e917de530a5c85866";
 
-const SECTIONS = "home, arts, automobiles, books, business, fashion, food, health, insider, magazine, movies, national, nyregion, obituaries, opinion, politics, realestate, science, sports, sundayreview, technology, theater, tmagazine, travel, upshot, world"; // From NYTimes
+const SECTIONS = "home, arts, automobiles, books, business, fashion,finance, food, health, insider, magazine, movies, national, nyregion, obituaries, opinion, politics, realestate, science, sports, sundayreview, technology, theater, tmagazine, travel, upshot, world"; // From NYTimes
 
 function buildUrl (url) {
   return NYTBaseUrl + url + ".json?api-key=" + ApiKey
