@@ -77,8 +77,27 @@
             error: ''
         },
         methods: {
-            fetchNews: function () {
-                this.loading = true;
-                this.error = '';
-                axios.get('https://newsapi.org/v2/top-headlines', {
-                    params:
+  async fetchNews() {
+    this.loading = true;
+    this.error = '';
+
+    try {
+      const response = await axios.get('https://newsapi.org/v2/top-headlines', {
+        params: {
+          country: 'us',
+          category: 'business',
+        },
+      });
+
+      const newsArticles = response.data.articles;
+      // Do something with the news articles
+
+    } catch (error) {
+      this.error = 'An error occurred while fetching news.';
+      console.error(error);
+    }
+
+    this.loading = false;
+  },
+},
+
